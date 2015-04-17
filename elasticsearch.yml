@@ -1,0 +1,35 @@
+cluster.name: elasticsearch_production
+
+bootstrap.mlockall: true
+
+# make sure we don't get OOM
+indices.fielddata.cache.size: 50%
+
+# Based on https://groups.google.com/forum/#!topic/elasticsearch/L07E8A1_S-0
+
+# Require explicit index creation
+action.auto_create_index: true
+
+# Protect against accidental close/delete operations
+# on all indices. You can still close/delete individual
+# indices
+action.disable_close_all_indices: true
+action.disable_delete_all_indices: true
+
+# Disable ability to shutdown nodes via REST API
+action.disable_shutdown: true
+
+# Disable automatic mapping creation
+index.mapper.dynamic: false
+
+script.disable_dynamic: false
+
+# network.publish_host: This must be provided as startup argument
+
+discovery.zen.ping:
+  multicast.enabled: false
+  # unicast.hosts: This must be provided as startup argument
+
+path:
+  logs: /data/log
+  data: /data/data
