@@ -1,4 +1,4 @@
-FROM java:8
+FROM andreptb/oracle-java
 
 MAINTAINER Luigis Box <support@luigisbox.com>
 
