@@ -22,7 +22,7 @@ action.disable_shutdown: true
 # Disable automatic mapping creation
 index.mapper.dynamic: false
 
-script.disable_dynamic: false
+script.inline: on
 
 # network.publish_host: This must be provided as startup argument
 
