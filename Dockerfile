@@ -12,6 +12,9 @@ RUN \
   rm -f $ES_PKG_NAME.tar.gz && \
   mv /$ES_PKG_NAME /elasticsearch
 
+RUN /elasticsearch/bin/plugin -i elasticsearch/marvel/latest
+RUN /elasticsearch/bin/plugin -install statsd -url https://github.com/Automattic/elasticsearch-statsd-plugin/releases/download/v0.3.3/elasticsearch-statsd-0.3.3.zip
+
 # Define mountable directories.
 VOLUME ["/data"]
 

@@ -33,3 +33,7 @@ discovery.zen.ping:
 path:
   logs: /data/log
   data: /data/data
+
+metrics:
+  statsd:
+    host: 127.0.0.1
