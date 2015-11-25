@@ -2,7 +2,7 @@ FROM andreptb/oracle-java
 
 MAINTAINER Luigis Box <support@luigisbox.com>
 
-ENV ES_PKG_NAME elasticsearch-1.7.1
+ENV ES_PKG_NAME elasticsearch-2.1.0
 
 # Install Elasticsearch.
 RUN \
@@ -12,8 +12,16 @@ RUN \
   rm -f $ES_PKG_NAME.tar.gz && \
   mv /$ES_PKG_NAME /elasticsearch
 
-RUN /elasticsearch/bin/plugin -i elasticsearch/marvel/latest
-RUN /elasticsearch/bin/plugin -install statsd -url https://github.com/Automattic/elasticsearch-statsd-plugin/releases/download/v0.3.3/elasticsearch-statsd-0.3.3.zip
+RUN /elasticsearch/bin/plugin install marvel-agent
+RUN /elasticsearch/bin/plugin install license
+
+# grab gosu for easy step-down from root
+RUN gpg --keyserver pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4
+RUN curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.7/gosu-$(dpkg --print-architecture)" \
+    && curl -o /usr/local/bin/gosu.asc -SL "https://github.com/tianon/gosu/releases/download/1.7/gosu-$(dpkg --print-architecture).asc" \
+    && gpg --verify /usr/local/bin/gosu.asc \
+    && rm /usr/local/bin/gosu.asc \
+    && chmod +x /usr/local/bin/gosu
 
 # Define mountable directories.
 VOLUME ["/data"]
@@ -24,8 +32,16 @@ ADD elasticsearch.yml /elasticsearch/config/elasticsearch.yml
 # Define working directory.
 WORKDIR /data
 
+RUN groupadd -r elastic && useradd -r -g elastic elastic
+RUN chown -R elastic:elastic /data \
+    && chown -R elastic:elastic /elasticsearch
+
 # Define default command.
-CMD ["/elasticsearch/bin/elasticsearch"]
+CMD ["gosu", "elastic", "/elasticsearch/bin/elasticsearch"]
+
+COPY entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
 
 # Expose ports.
 #   - 9200: HTTP

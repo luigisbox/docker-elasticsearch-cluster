@@ -1,3 +1,5 @@
+network.bind_host: 0.0.0.0
+
 cluster.name: elasticsearch_production
 
 bootstrap.mlockall: true
@@ -22,7 +24,7 @@ action.disable_shutdown: true
 # Disable automatic mapping creation
 index.mapper.dynamic: false
 
-script.disable_dynamic: false
+script.inline: on
 
 # network.publish_host: This must be provided as startup argument
 
@@ -33,7 +35,3 @@ discovery.zen.ping:
 path:
   logs: /data/log
   data: /data/data
-
-metrics:
-  statsd:
-    host: 127.0.0.1
